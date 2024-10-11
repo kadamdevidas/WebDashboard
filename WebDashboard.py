@@ -7,7 +7,8 @@ import pandas as pd
 import plotly.graph_objects as go
 
 # Load the Merged MPR Excel file
-file_path = r"/Users/omkarkadam/Documents/Automate with Python/Merged_MPR.xlsx"
+file_path = "./Merged_MPR.xlsx"
+
 
 # Load data from each sheet
 pm02_df = pd.read_excel(file_path, sheet_name='PM02')
