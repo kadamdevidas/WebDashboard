@@ -1,22 +1,22 @@
-#r"/Users/omkarkadam/Documents/Automate with Python/Merged_MPR.xlsx"
-
-import dash
-from dash import dcc, html
+from dash import Dash, dcc, html
 from dash.dependencies import Input, Output
 import pandas as pd
 import plotly.graph_objects as go
+from flask import Flask
 
-# Load the Merged MPR Excel file
+# Create the Flask server
+server = Flask(__name__)
+
+# Create the Dash app and pass the Flask server
+app = Dash(__name__, server=server)
+
+# Load the Merged MPR Excel file (ensure that it's accessible on Render or use an environment variable)
 file_path = "./Merged_MPR.xlsx"
-
 
 # Load data from each sheet
 pm02_df = pd.read_excel(file_path, sheet_name='PM02')
 pm01_df = pd.read_excel(file_path, sheet_name='PM01')
 breakdown_df = pd.read_excel(file_path, sheet_name='Breakdown Maintenance')
-
-# Initialize the Dash app
-app = dash.Dash(__name__)
 
 # Define app layout
 app.layout = html.Div(style={'backgroundColor': '#f9f9f9', 'font-family': 'Arial'}, children=[
@@ -63,7 +63,7 @@ def update_graphs(selected_months):
     # Colors for months
     colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd']
 
-    # PM01 Graphs (compact, row-wise)
+    # PM01 Graphs
     pm01_graphs = []
     for i, month in enumerate(selected_months):
         month_data = filtered_pm01[filtered_pm01['Month'] == month]
@@ -82,7 +82,7 @@ def update_graphs(selected_months):
         )
         pm01_graphs.append(html.Div(dcc.Graph(figure=fig), style={'display': 'inline-block', 'margin': '10px'}))
 
-    # PM02 Graphs (compact, row-wise, start new row after PM01)
+    # PM02 Graphs
     pm02_graphs = []
     for i, month in enumerate(selected_months):
         month_data = filtered_pm02[filtered_pm02['Month'] == month]
@@ -101,7 +101,7 @@ def update_graphs(selected_months):
         )
         pm02_graphs.append(html.Div(dcc.Graph(figure=fig), style={'display': 'inline-block', 'margin': '10px'}))
 
-    # Breakdown Maintenance Figure: Breakdown Jobs per Plant
+    # Breakdown Maintenance Figure
     breakdown_fig = go.Figure(data=[go.Pie(
         labels=filtered_breakdown['Plant'], values=filtered_breakdown['No. of Breakdown Jobs'], hole=.3
     )])
@@ -111,6 +111,6 @@ def update_graphs(selected_months):
 
     return pm01_graphs, pm02_graphs, breakdown_fig
 
-# Run the Dash app
-if __name__ == '__main__':
+# Main entry point
+if __name__ == "__main__":
     app.run_server(debug=True)
