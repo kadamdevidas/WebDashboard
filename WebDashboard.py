@@ -1,5 +1,5 @@
-####This verson 4 contains all the details for five sheets PM01, PM02, Breakdown Maintenance,
-####Jobs Hold for Shutdown, Vibration Monitoring.
+#### This version 4 contains all the details for five sheets PM01, PM02, Breakdown Maintenance,
+#### Jobs Hold for Shutdown, Vibration Monitoring.
 
 from dash import Dash, dcc, html
 from dash.dependencies import Input, Output, State
@@ -74,11 +74,15 @@ home_layout = html.Div(style={'textAlign': 'center', 'padding': '50px'}, childre
     html.H1('Mechanical Department Dashboard', style={'textAlign': 'center', 'padding': '20px', 'backgroundColor': '#161D6F', 'color': 'white'}),
     html.Div("Select a sheet to view details", style={'fontSize': '24px', 'padding': '20px'}),
 
-    # Align buttons horizontally
+    # First row for PM01, PM02, and Breakdown buttons
     html.Div(style={'textAlign': 'center', 'display': 'flex', 'justifyContent': 'center'}, children=[
         dcc.Link(html.Div("PM01", style={**button_style, 'backgroundColor': '#243642'}), href='/pm01'),
         dcc.Link(html.Div("PM02", style={**button_style, 'backgroundColor': '#387478'}), href='/pm02'),
-        dcc.Link(html.Div("Breakdown", style={**button_style, 'backgroundColor': '#629584'}), href='/breakdown'),
+        dcc.Link(html.Div("Breakdown", style={**button_style, 'backgroundColor': '#629584'}), href='/breakdown')
+    ]),
+
+    # Second row for Shutdown Jobs and Vibration Monitoring buttons
+    html.Div(style={'textAlign': 'center', 'display': 'flex', 'justifyContent': 'center'}, children=[
         dcc.Link(html.Div("Shutdown Jobs", style={**button_style, 'backgroundColor': '#A45E60'}), href='/shutdown'),
         dcc.Link(html.Div("Vibration Monitoring", style={**button_style, 'backgroundColor': '#4682B4'}), href='/vibration')
     ]),
@@ -202,7 +206,7 @@ def update_pm_graphs(sheet_df, prefix):
                 marker_color=colors[i % len(colors)], text=month_data['Planned'], textposition='auto'
             ))
             fig.add_trace(go.Bar(
-                x=month_data['Plant'], y=month_data['Executed'], name='Executed',
+                x=month_data['Plant'],                y=month_data['Executed'], name='Executed',
                 marker_color=colors[(i + 1) % len(colors)], text=month_data['Executed'], textposition='auto'
             ))
             fig.update_layout(
@@ -375,7 +379,7 @@ def update_vibration_monitoring(*clicked_buttons):
         fig.add_trace(go.Bar(
             x=month_data['Plant'], y=month_data['No. of Equipment Monitored (Executed)'], name='Monitored Equipment',
             marker_color='#ff7f0e', text=month_data['No. of Equipment Monitored (Executed)'], textposition='auto'
-        ))       
+        ))
         fig.add_trace(go.Bar(
             x=month_data['Plant'], y=month_data['No. of Equipment With Normal Health'], name='Normal Health Equipment',
             marker_color='#2ca02c', text=month_data['No. of Equipment With Normal Health'], textposition='auto'
